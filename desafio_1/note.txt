@@ -1,0 +1,37 @@
+Gere um arquivo test_login.py do desafio_1
+ com testes E2E usando Playwright com Python e pytest para validar o fluxo de login.
+
+Contexto: O projeto usa arquivos HTML locais abertos via file://:
+login.html
+dashboard.html
+
+A tela login.html possui:
+#email — campo de email
+#senha — campo de senha
+#btn-login — botão de login
+#mensagem — parágrafo que exibe erros
+
+A tela dashboard.html possui:
+#welcome-message — parágrafo com texto "Usuário autenticado com sucesso."
+#btn-logout — botão de sair
+
+Dados de entrada válidos:
+Email: user@test.com
+Senha: 123456
+
+Testes a serem gerados:
+test_login_valido_redireciona_para_dashboard 
+ — preenche email e senha válidos, clica em login, valida que a URL final é dashboard_path.as_uri() e que #btn-logout está visível.
+
+test_mensagem_erro_credenciais_invalidas
+ — preenche credenciais inválidas, clica em login, valida que o elemento #mensagem contém o texto "Credenciais inválidas" e que a URL não mudou (permanece em login_path.as_uri()).
+
+test_welcome_message_visivel_apos_login
+ — realiza login válido e valida que #welcome-message está visível e contém o texto "Usuário autenticado com sucesso."
+
+Requisitos técnicos:
+Use pathlib.Path para montar os caminhos dos arquivos
+Use Page e expect de playwright.sync_api
+Abra os arquivos usando Path(__file__).parent e .as_uri()
+Não use curingas como **/dashboard.html na validação de URL
+Gere apenas o código do teste, sem explicações
