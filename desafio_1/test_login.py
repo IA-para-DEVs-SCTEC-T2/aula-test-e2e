@@ -1,43 +1,32 @@
-from pathlib import Path
-from playwright.sync_api import sync_playwright, expect
+import os
+import re
+from playwright.sync_api import Page, expect
+
+# Caminho absoluto para login.html usando protocolo file://
+LOGIN_URL = "file://" + os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "login.html")
+)
 
 
-def test_login_flow():
-    """Teste E2E do fluxo de login com redirecionamento para dashboard"""
-    
-    # Definir caminhos dos arquivos HTML
-    project_root = Path(__file__).parent
-    login_path = project_root / "login.html"
-    dashboard_path = project_root / "dashboard.html"
-    
-    # Converter para URIs
-    login_uri = login_path.as_uri()
-    dashboard_uri = dashboard_path.as_uri()
-    
-    # Dados de entrada
-    email = "user@test.com"
-    senha = "123456"
-    
-    with sync_playwright() as p:
-        browser = p.chromium.launch()
-        page = browser.new_page()
-        
-        # 1. Abrir a página de login
-        page.goto(login_uri)
-        
-        # 2. Preencher email
-        page.fill("#email", email)
-        
-        # 3. Preencher senha
-        page.fill("#senha", senha)
-        
-        # 4. Clicar no botão de login
-        page.click("#btn-login")
-        
-        # 5. Validar redirecionamento para dashboard
-        expect(page).to_have_url(dashboard_uri)
-        
-        # 6. Validar que o botão de logout está visível
-        expect(page.locator("#btn-logout")).to_be_visible()
-        
-        browser.close()
+def test_login_sucesso(page: Page):
+    # 1. Abre a página de login via protocolo file://
+    page.goto(LOGIN_URL)
+
+    # 2. Preenche o campo de email com credenciais válidas
+    page.fill("#email", "user@test.com")
+
+    # 3. Preenche o campo de senha
+    page.fill("#senha", "123456")
+
+    # 4. Clica no botão de login
+    page.click("#btn-login")
+
+    # 5. Valida que a URL contém dashboard.html após redirecionamento
+    expect(page).to_have_url(re.compile(r"dashboard\.html"))
+
+    # 6. Valida que o elemento de boas-vindas está visível
+    welcome = page.locator("#welcome-message")
+    expect(welcome).to_be_visible()
+
+    # 7. Valida o texto exato do elemento de boas-vindas
+    expect(welcome).to_have_text("Usuário autenticado com sucesso.")
