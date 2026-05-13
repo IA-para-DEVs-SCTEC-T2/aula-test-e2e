@@ -28,7 +28,7 @@ def test_usuario_adiciona_produto_ao_carrinho(page: Page):
     expect(page).to_have_url(produto_path.as_uri())
     expect(page.locator("#produto-nome")).to_have_text("Notebook")
 
-    page.click("#btn-adicionar-carrinho")
+    page.click("#btn-add-cart")
 
     expect(page).to_have_url(carrinho_path.as_uri())
     expect(page.locator("#item-carrinho")).to_have_text("Notebook")
