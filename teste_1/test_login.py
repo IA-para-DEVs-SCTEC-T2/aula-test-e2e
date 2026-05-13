@@ -11,4 +11,4 @@ def test_login_redireciona_para_dashboard(page: Page):
     page.click("#btn-login")
 
     expect(page).to_have_url((base / "dashboard.html").as_uri())
-    expect(page.locator("#btn-logout")).to_be_visible()
+    expect(page.locator("#btn-sair")).to_be_visible()
